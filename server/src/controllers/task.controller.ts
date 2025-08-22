@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
-    const { projectId } = req.body;
+    const { projectId } = req.query;
     try {
         const tasks = await prisma.task.findMany({
         where: {

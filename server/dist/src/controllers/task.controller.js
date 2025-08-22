@@ -13,7 +13,7 @@ exports.updateTaskStatus = exports.createTask = exports.getTasks = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { projectId } = req.body;
+    const { projectId } = req.query;
     try {
         const tasks = yield prisma.task.findMany({
             where: {
