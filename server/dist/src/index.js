@@ -9,6 +9,9 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
+// Routes
+const project_routes_1 = __importDefault(require("./routes/project.routes"));
+const task_routes_1 = __importDefault(require("./routes/task.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -22,6 +25,8 @@ app.use((0, cors_1.default)());
 app.get("/", (req, res) => {
     res.send("This is home route");
 });
+app.use("/api/v1/projects", project_routes_1.default);
+app.use("/api/v1/tasks", task_routes_1.default);
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

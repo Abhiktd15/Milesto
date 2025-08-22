@@ -5,6 +5,10 @@ import cors from 'cors'
 import helmet from 'helmet';
 import morgan from 'morgan';
 
+// Routes
+import projectRoutes from './routes/project.routes'
+import taskRoutes from './routes/task.routes'
+
 dotenv.config()
 
 const app = express()
@@ -17,10 +21,11 @@ app.use(bodyParser.urlencoded({extended:false}))
 app.use(cors())
 
 // routes
-
 app.get("/",(req,res) => {
     res.send("This is home route")
 })
+app.use("/api/v1/projects",projectRoutes)
+app.use("/api/v1/tasks",taskRoutes)
 
 const port = process.env.PORT || 4000;
 
