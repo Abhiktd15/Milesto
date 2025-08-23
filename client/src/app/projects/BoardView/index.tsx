@@ -137,7 +137,7 @@ const Task = ({task}: TaskProps) =>{
 
     return (
         <div ref={(instance) => {drag(instance)}}
-            className={`mb-4 rounded-md bg-white shadow dark:bg-dark-300 ${isDragging?"opacity-50":"opacity-100"}`}
+            className={`mb-4 rounded-md bg-white shadow dark:bg-gray-900 border ${isDragging?"opacity-50":"opacity-100"}`}
         >
             {task.attachments && task.attachments.length > 0 && (
                 <Image 
@@ -145,7 +145,7 @@ const Task = ({task}: TaskProps) =>{
                     alt={task.attachments[0].fileName}
                     width={400}
                     height={200}
-                    className='h-auto w-full rounded-t-md'
+                    className='h-auto w-full rounded-xl p-2 '
                 />
             )}
 
@@ -155,7 +155,7 @@ const Task = ({task}: TaskProps) =>{
                         {task.priority && <PriorityTag priority={task.priority} />}
                         <div className='flex gap-2'>
                             {taskTagsSplit.map((tag) =>( 
-                                <div key={tag} className='rounded-full bg-blue-100 px-2 py-1 text-xs'>
+                                <div key={tag} className='rounded-full bg-red-100 px-2 py-1 text-xs dark:bg-gray-500'>
                                     {" "}
                                     {tag}
                                 </div>
@@ -175,11 +175,11 @@ const Task = ({task}: TaskProps) =>{
                     )}
                 </div>
 
-                <div className='text-xs text-gray-500 dark:text-neutral-500'>
+                <div className='text-xs text-gray-500 dark:text-neutral-400'>
                     {formattedStartDate && <span>{formattedStartDate} - </span>}
                     {formattedDueDate && <span>{formattedDueDate}</span>}
                 </div>
-                <p className='text-sm text-gray-600 dark:text-neutral-500'>
+                <p className='text-sm text-gray-600 dark:text-neutral-300'>
                     {task.description}
                 </p>
                 <div className='mt-4 border-t border-gray-200 dark:border-gray-500'/>

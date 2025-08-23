@@ -19,7 +19,7 @@ const DashboardLayout = ({children} : {children:ReactNode}) => {
     },[isDarkMode])
     
     return (
-        <div className='flex min-h-screen w-full '>
+        <div className='flex min-h-screen w-full  '>
             {/* sidebar */}
             <Sidebar/>
             <main className={`flex w-full flex-col ${isSidebarCollapsed ? " " :"md:pl-64"} `}>

@@ -212,3 +212,50 @@ html,body,#root,.app{
   @apply bg-gray-500;
   @apply text-gray-900;
 } */
+
+
+
+/* TIMELINE STYLING */
+.timeline ._3_ygE {
+  @apply rounded-tl-md border border-r-0 border-[#e6e4e4] dark:border-dark-300;
+}
+.timeline ._2eZzQ {
+  @apply border-[#e6e4e4] dark:border-dark-300;
+}
+.timeline ._2dZTy {
+  @apply fill-white dark:fill-dark-200;
+}
+.timeline ._2dZTy:nth-child(even) {
+  @apply fill-[#f5f5f5] dark:fill-gray-400/10;
+}
+.timeline ._35nLX {
+  @apply fill-white stroke-[#e6e4e4] dark:fill-dark-200 dark:stroke-dark-200;
+}
+.timeline ._9w8d5 {
+  @apply fill-[#333] dark:fill-white;
+}
+.timeline ._34SS0 {
+  @apply bg-white dark:bg-dark-200;
+}
+.timeline ._34SS0:nth-of-type(even) {
+  @apply bg-[#f5f5f5] dark:bg-gray-400/10;
+}
+.timeline ._RuwuK,
+.timeline ._3rUKi,
+.timeline ._1rLuZ {
+  @apply stroke-[#e6e4e4] dark:stroke-dark-200;
+}
+.timeline ._3ZbQT {
+  @apply border-l-0 border-[#e6e4e4] dark:border-dark-300;
+}
+.timeline ._3T42e {
+  @apply bg-white dark:bg-gray-600;
+}
+.timeline ._29NTg {
+  @apply dark:text-neutral-100;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
