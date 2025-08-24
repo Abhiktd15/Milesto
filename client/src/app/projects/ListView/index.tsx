@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import TaskCard from '@/components/TaskCard';
+import { Button } from '@/components/ui/button';
 import { Task, useGetTasksQuery } from '@/state/api';
 import React from 'react'
 
@@ -16,8 +17,10 @@ const ListView = ({id,setIsModalNewTaskOpen}: Props) => {
     if(error) return <div>An error occured while fetching the tasks</div>
     return (
         <div className='px-4 pb-8 xl:px-6'>
-            <div className='pt-5'>
-                <Header name='List' />
+            <div className='pt-5 px-20'>
+                <Header name='List' buttonComponent={
+                    <Button onClick={() => setIsModalNewTaskOpen(true)}>Add Task</Button>
+                } isSmallText />
             </div>
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 '>
                 {tasks?.map((task:Task) => <TaskCard key={task.id} task={task}/>)}

@@ -88,7 +88,7 @@ export const api = createApi({
                 method: "POST",
                 body:project
             }),
-            invalidatesTags:["Projects"]
+            invalidatesTags:["Projects"],
         }),
         getTasks : build.query<Task[],{projectId:number}>({
             query: ({projectId}) => `tasks?projectId=${projectId}`,
