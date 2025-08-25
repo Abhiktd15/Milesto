@@ -9,7 +9,7 @@ type Props ={
 
 const TaskCard = ({task} : Props) => {
     return (
-        <div className='mb-3 rounded bg-white p-4 shadow  h-fit dark:bg-dark-200'>
+        <div className='mb-3 rounded max-w-sm bg-white p-4 shadow  h-fit dark:bg-dark-200'>
             {task.attachments && task.attachments.length > 0 && (
                 <div>
                     <strong>Attachemnt:</strong>
