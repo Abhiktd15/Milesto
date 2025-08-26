@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/components/Header";
 import {
     Priority,
     Project,
@@ -7,10 +8,7 @@ import {
     useGetProjectsQuery,
     useGetTasksQuery,
 } from "@/state/api";
-import React from "react";
-import { useAppSelector } from "../redux";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import Header from "@/components/Header";
+import { format } from "date-fns";
 import {
     Bar,
     BarChart,
@@ -24,13 +22,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import { format } from "date-fns";
-const taskColumns: GridColDef[] = [
-    { field: "title", headerName: "Title", width: 200 },
-    { field: "status", headerName: "Status", width: 150 },
-    { field: "priority", headerName: "Priority", width: 150 },
-    { field: "dueDate", headerName: "Due Date", width: 150 },
-];
+import { useAppSelector } from "../redux";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -73,7 +65,7 @@ const HomePage = () => {
 
     const projectStatus = Object.keys(statusCount).map((key) => ({
         name: key,
-        count: statusCount[key],
+        count: statusCount[key], 
     }));
 
     const chartColors = isDarkMode
@@ -89,7 +81,7 @@ const HomePage = () => {
         };
 
     return (
-        <div className=" h-full w-[100%] bg-gray-100 dark:bg-dark-100 p-8">
+        <div className=" h-full w-[100%] dark:bg-dark-100 p-8">
             <Header name="Project Management Dashboard" />
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* Bar Chart */}

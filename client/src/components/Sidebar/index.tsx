@@ -101,11 +101,11 @@ const Sidebar = () => {
                 {/* Priority list */}
                 {showPriority && (
                     <>
-                        <SidebarLink icon={AlertCircle} label='Urgent' href='/priory/urgent' />
-                        <SidebarLink icon={ShieldAlert} label='High' href='/priory/high' />
-                        <SidebarLink icon={AlertTriangle} label='Medium' href='/priory/medium' />
-                        <SidebarLink icon={AlertOctagon} label='Low' href='/priory/low' />
-                        <SidebarLink icon={Layers3} label='Backlog' href='/priory/backlog' />
+                        <SidebarLink icon={AlertCircle} label='Urgent' href='/priority/urgent' />
+                        <SidebarLink icon={ShieldAlert} label='High' href='/priority/high' />
+                        <SidebarLink icon={AlertTriangle} label='Medium' href='/priority/medium' />
+                        <SidebarLink icon={AlertOctagon} label='Low' href='/priority/low' />
+                        <SidebarLink icon={Layers3} label='Backlog' href='/priority/backlog' />
                     </>
                 )}
                     

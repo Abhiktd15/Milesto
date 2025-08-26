@@ -97,11 +97,18 @@ export const api = createApi({
         invalidatesTags: ["Projects"],
         }),
         getTasks: build.query<Task[], { projectId: number }>({
-        query: ({ projectId }) => `tasks?projectId=${projectId}`,
-        providesTags: (result) =>
-            result
-            ? result.map(({ id }) => ({ type: "Tasks" as const, id }))
-            : [{ type: "Tasks" as const }],
+          query: ({ projectId }) => `tasks?projectId=${projectId}`,
+          providesTags: (result) =>
+              result
+              ? result.map(({ id }) => ({ type: "Tasks" as const, id }))
+              : [{ type: "Tasks" as const }],
+        }),
+        getUsersTasks: build.query<Task[],number>({
+          query: (userId) => `tasks/user/${userId}`,
+          providesTags: (result,error,userId) =>
+              result
+              ? result.map(({ id }) => ({ type: "Tasks", id }))
+              : [{ type: "Tasks",id:userId}],
         }),
         createTask: build.mutation<Task, Partial<Task>>({
         query: (task) => ({
@@ -129,8 +136,8 @@ export const api = createApi({
         providesTags: ["Users"],
         }),
         getTeams: build.query<Team[], void>({
-        query: () => "teams",
-        providesTags: ["Teams"],
+          query: () => "teams",
+          providesTags: ["Teams"],
         }),
     }),
 });
@@ -142,5 +149,6 @@ export const {
     useUpdateTaskStatusMutation,
     useSearchQuery,
     useGetUsersQuery,
-    useGetTeamsQuery
+    useGetTeamsQuery,
+    useGetUsersTasksQuery
 } = api;

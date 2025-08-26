@@ -27,7 +27,7 @@ const TableView = ({id,setIsModalNewTaskOpen}: Props) => {
                     <Button onClick={() => setIsModalNewTaskOpen(true)}>Add Task</Button>
                 } isSmallText />
             </div>
-            <div className='border-2  mx-auto overflow-x-auto rounded-xl'>
+            <div className='border-2  mx-auto pb-5 overflow-x-auto rounded-xl'>
                 <table className='w-full my-2'>
                     <thead>
                         <tr className='border-b-2 '>

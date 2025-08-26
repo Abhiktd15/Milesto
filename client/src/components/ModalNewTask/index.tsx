@@ -7,10 +7,10 @@ import { useState } from 'react';
 interface Props {
     isOpen:boolean;
     onClose: () => void;
-    id:string;
+    id?:string | null;
 }
 
-const ModalNewTask = ({isOpen,onClose,id}: Props) => {
+const ModalNewTask = ({isOpen,onClose,id=null}: Props) => {
     const [createTask,{isLoading}] = useCreateTaskMutation();
 
     const [title,setTitle]=useState("")
@@ -23,13 +23,15 @@ const ModalNewTask = ({isOpen,onClose,id}: Props) => {
     const [authorUserId,setAuthorUserId]=useState("")
     const [assignedUserId,setAssigneeUserId]=useState("")
 
+    const [projectID,setProjectID] = useState("")
+    
     const handleSubmit = async () => {
-        if(!title || !authorUserId) return;
+        if(!title || !authorUserId || !(id !== null || projectID)) return;
         const formatedStartDate = formatISO(new Date(startDate),{representation:'complete'})
         const formatedEndDate = formatISO(new Date(dueDate),{representation:'complete'})
 
         await createTask({
-            projectId:Number(id),
+            projectId:id!==null ? Number(id) : Number(projectID),
             title,
             description,
             status,
@@ -51,7 +53,7 @@ const ModalNewTask = ({isOpen,onClose,id}: Props) => {
         return title && authorUserId;
     }
     
-    const selectStyles= 'mb-4 block w-full rounded border border-gray-300 px-3 py-2 dark:border-dark-300 dark:bg-dark-300 dark:text-white '
+    const selectStyles= 'mb-4 z-50  block w-full rounded border border-gray-300 px-3 py-2 dark:border-dark-300 dark:bg-dark-300 dark:text-white '
     const inputStyles='w-full rounded border border-gray-300 p-2 shadow-sm dark:border-dark-300 dark:bg-gray-700/10 dark:text-white  dark:focus:outline-none ';
     
     return (
@@ -101,6 +103,16 @@ const ModalNewTask = ({isOpen,onClose,id}: Props) => {
 
                 <input type='text' className={inputStyles} placeholder='Author User ID' value={authorUserId} onChange={(e) => setAuthorUserId(e.target.value)}/>
                 <input type='text' className={inputStyles} placeholder='Assignee User ID' value={assignedUserId} onChange={(e) => setAssigneeUserId(e.target.value)}/>
+
+                {id == null && (
+                    <input
+                        type='text'
+                        className={inputStyles} 
+                        placeholder='Project Id' 
+                        value={projectID} 
+                        onChange={(e) => setProjectID(e.target.value)}
+                    />
+                )}
 
                 <Button type='submit'
                     className={`mt-4 flex w-full  justify-center rounded-md border px-4 py-2 text-base  font-medium shadow-sm ${!isFormValid() || isLoading ? "cursor-not-allowed ":"hover:cursor-pointer"}`}
