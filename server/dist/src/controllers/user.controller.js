@@ -24,6 +24,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(400).json({
             message: "All Fields are required"
         });
+        return;
     }
     try {
         const alreadyExists = yield prisma.user.findUnique({
@@ -33,6 +34,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(400).json({
                 message: "User already Exists"
             });
+            return;
         }
         const encyptedPassword = yield bcryptjs_1.default.hash(password, Number(process.env.PASSWORD_HASH));
         const user = yield prisma.user.create({
@@ -73,6 +75,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json({
             message: "All Fields are required"
         });
+        return;
     }
     try {
         let user = yield prisma.user.findUnique({
@@ -82,12 +85,14 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(404).json({
                 message: "User Doesn't Exists!"
             });
+            return;
         }
         const isPasswordMatch = yield bcryptjs_1.default.compare(password, user === null || user === void 0 ? void 0 : user.password);
         if (!isPasswordMatch) {
             res.status(400).json({
-                messgae: "Invalid Credentials"
+                message: "Invalid Credentials"
             });
+            return;
         }
         const tokenData = {
             userId: user === null || user === void 0 ? void 0 : user.userId
@@ -135,23 +140,22 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUsers = getUsers;
 const isAuthorized = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.id;
-    console.log(userId);
     const user = yield prisma.user.findUnique({
         where: { userId: Number(userId) },
         select: {
+            userId: true,
             email: true,
             username: true,
             profilePictureUrl: true,
+            teamId: true,
         }
     });
     if (!user) {
         res.status(404).json({
             message: "User not found !"
         });
+        return;
     }
-    res.status(200).json({
-        message: `Welcome Back ${user === null || user === void 0 ? void 0 : user.username}`,
-        user
-    });
+    res.status(200).json(user);
 });
 exports.isAuthorized = isAuthorized;

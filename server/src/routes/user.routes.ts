@@ -6,6 +6,8 @@ const router = Router();
 router.post("/new",createUser)
 router.post("/login",login)
 
+router.get('/',getUsers)
+
 router.use(isAuthenticated)
 router.get("/me",isAuthorized)
 export default router

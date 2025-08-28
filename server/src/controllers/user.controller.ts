@@ -12,6 +12,7 @@ export const createUser = async (req:Request,res:Response):Promise<void> =>{
         res.status(400).json({
             message:"All Fields are required"
         })
+        return;
     }
 
     try {
@@ -22,6 +23,7 @@ export const createUser = async (req:Request,res:Response):Promise<void> =>{
             res.status(400).json({
                 message:"User already Exists"
             })
+            return;
         }
 
         const encyptedPassword = await bcrypt.hash(password,Number(process.env.PASSWORD_HASH) )
@@ -66,6 +68,7 @@ export const login = async (req:Request,res:Response):Promise<void> =>{
         res.status(400).json({
             message:"All Fields are required"
         })
+        return;
     }
 
     try {
@@ -76,13 +79,15 @@ export const login = async (req:Request,res:Response):Promise<void> =>{
             res.status(404).json({
                 message:"User Doesn't Exists!"
             })
+            return;
         }
 
         const isPasswordMatch = await bcrypt.compare(password,user?.password as string)
         if(!isPasswordMatch) {
             res.status(400).json({
-                messgae:"Invalid Credentials"
+                message:"Invalid Credentials"
             })
+            return;
         }
         
         const tokenData = {
@@ -133,14 +138,16 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const isAuthorized = async(req:Request,res:Response):Promise<void> => {
     const userId = (req as AuthenticatedRequest).id;
-    console.log(userId)
     
     const user = await prisma.user.findUnique({
         where:{userId:Number(userId)},
         select:{
+            userId:true,
             email:true,
             username:true,
             profilePictureUrl:true,
+            teamId:true,
+
         }
     },)
 
@@ -148,10 +155,8 @@ export const isAuthorized = async(req:Request,res:Response):Promise<void> => {
         res.status(404).json({
             message:"User not found !"
         })
+        return;
     }
 
-    res.status(200).json({
-        message:`Welcome Back ${user?.username}`,
-        user
-    })
+    res.status(200).json(user)
 }

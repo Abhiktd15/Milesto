@@ -27,8 +27,8 @@ export interface User {
   userId?: number;
   username: string;
   email: string;
+  password:string;
   profilePictureUrl?: string;
-  cognitoId?: string;
   teamId?: number;
 }
 
@@ -82,7 +82,7 @@ export interface SearchResults {
 export const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
     reducerPath: "api",
-    tagTypes: ["Projects", "Tasks", "Users", "Teams"],
+    tagTypes: ["Projects", "Tasks", "Users", "Teams","Auth"],
     endpoints: (build) => ({
         getProjects: build.query<Project[], void>({
         query: () => "projects",
@@ -139,6 +139,33 @@ export const api = createApi({
           query: () => "teams",
           providesTags: ["Teams"],
         }),
+        //users apis
+        createUser: build.mutation<User[],Partial<User>>({
+          query: (signupData) => ({
+            url : "users/new",
+            credentials:"include",
+            method:"POST",
+            body:signupData
+          }),
+          invalidatesTags: ["Auth"]
+        }),
+        loginUser:build.mutation<User[],Partial<User>>({
+          query: (loginData) => ({
+            url:"users/login",
+            credentials:"include",
+            method:"POST",
+            body:loginData,
+          }),
+          invalidatesTags:["Auth"]
+        }),
+        checkAuth: build.query<User, void>({
+          query: () => ({
+            url:"users/me",
+            credentials:"include",
+            method:"GET"
+          }),
+          providesTags: ["Auth"],
+        }),
     }),
 });
 export const {
@@ -150,5 +177,8 @@ export const {
     useSearchQuery,
     useGetUsersQuery,
     useGetTeamsQuery,
-    useGetUsersTasksQuery
+    useGetUsersTasksQuery,
+    useCreateUserMutation,
+    useLoginUserMutation,
+    useCheckAuthQuery
 } = api;
