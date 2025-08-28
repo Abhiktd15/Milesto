@@ -8,10 +8,118 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsers = void 0;
+exports.isAuthorized = exports.getUsers = exports.login = exports.createUser = void 0;
 const client_1 = require("@prisma/client");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// import { AuthenticatedRequest } from "../middlewares/isAuthenticated";
 const prisma = new client_1.PrismaClient();
+const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        res.status(400).json({
+            message: "All Fields are required"
+        });
+    }
+    try {
+        const alreadyExists = yield prisma.user.findUnique({
+            where: { email }
+        });
+        if (alreadyExists) {
+            res.status(400).json({
+                message: "User already Exists"
+            });
+        }
+        const encyptedPassword = yield bcryptjs_1.default.hash(password, Number(process.env.PASSWORD_HASH));
+        const user = yield prisma.user.create({
+            data: {
+                email,
+                password: encyptedPassword,
+                username,
+                profilePictureUrl: ""
+            }
+        });
+        const tokenData = {
+            userId: user.userId
+        };
+        const token = yield jsonwebtoken_1.default.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
+        res.status(201)
+            .cookie("token", token, {
+            maxAge: 1 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: "strict",
+            secure: false
+        })
+            .json({
+            message: "User created Successfully",
+            user,
+            success: true
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            message: `Error Creating Tasks ${error.message}`,
+        });
+    }
+});
+exports.createUser = createUser;
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        res.status(400).json({
+            message: "All Fields are required"
+        });
+    }
+    try {
+        let user = yield prisma.user.findUnique({
+            where: { email },
+        });
+        if (!user) {
+            res.status(404).json({
+                message: "User Doesn't Exists!"
+            });
+        }
+        const isPasswordMatch = yield bcryptjs_1.default.compare(password, user === null || user === void 0 ? void 0 : user.password);
+        if (!isPasswordMatch) {
+            res.status(400).json({
+                messgae: "Invalid Credentials"
+            });
+        }
+        const tokenData = {
+            userId: user === null || user === void 0 ? void 0 : user.userId
+        };
+        const token = yield jsonwebtoken_1.default.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
+        user = {
+            userId: Number(user === null || user === void 0 ? void 0 : user.userId),
+            email: user === null || user === void 0 ? void 0 : user.email,
+            password: "",
+            profilePictureUrl: (user === null || user === void 0 ? void 0 : user.profilePictureUrl) || "",
+            username: user === null || user === void 0 ? void 0 : user.username,
+            teamId: (user === null || user === void 0 ? void 0 : user.teamId) !== undefined && (user === null || user === void 0 ? void 0 : user.teamId) !== null ? Number(user === null || user === void 0 ? void 0 : user.teamId) : null,
+        };
+        res.status(201)
+            .cookie("token", token, {
+            maxAge: 1 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: "strict",
+            secure: false
+        })
+            .json({
+            message: `Welcome Back! ${user === null || user === void 0 ? void 0 : user.username}`,
+            user,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            message: `Error Logging in the user ${error.message}`,
+        });
+    }
+});
+exports.login = login;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { projectId } = req.query;
     try {
@@ -25,3 +133,25 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUsers = getUsers;
+const isAuthorized = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.id;
+    console.log(userId);
+    const user = yield prisma.user.findUnique({
+        where: { userId: Number(userId) },
+        select: {
+            email: true,
+            username: true,
+            profilePictureUrl: true,
+        }
+    });
+    if (!user) {
+        res.status(404).json({
+            message: "User not found !"
+        });
+    }
+    res.status(200).json({
+        message: `Welcome Back ${user === null || user === void 0 ? void 0 : user.username}`,
+        user
+    });
+});
+exports.isAuthorized = isAuthorized;
