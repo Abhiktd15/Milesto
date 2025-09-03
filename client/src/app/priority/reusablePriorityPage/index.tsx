@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import ModalNewTask from '@/components/ModalNewTask';
 import TaskCard from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';        
-import { Priority, Task, useGetUsersTasksQuery } from '@/state/api';
+import { Priority, Task, useCheckAuthQuery, useGetUsersQuery, useGetUsersTasksQuery } from '@/state/api';
 import { format } from 'date-fns';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -28,12 +28,15 @@ const ReusablePriorityPage = ({priority}: Props) => {
     const [view,setView] = useState("list")
     const [isModalNewTaskOpen,setIsModalNewTaskOpen] = useState(false)
 
-    const userId = 1;
+    const {data:user} = useCheckAuthQuery() 
+    const userId = user?.userId as number
+    
     const {data : tasks,isLoading,isError} = useGetUsersTasksQuery(userId
         ,{
         skip: userId === null
     })
     const filteredTask  = tasks?.filter((task:Task) => task.priority === priority)
+    
     
     if(isError || !tasks) return <div> Error fetching tasks</div>
 

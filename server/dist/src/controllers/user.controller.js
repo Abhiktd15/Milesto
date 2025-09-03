@@ -148,7 +148,8 @@ const isAuthorized = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             username: true,
             profilePictureUrl: true,
             teamId: true,
-        }
+            team: true
+        },
     });
     if (!user) {
         res.status(404).json({

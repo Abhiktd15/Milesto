@@ -1,6 +1,6 @@
 import Modal from '@/components/Modal';
 import { Button } from '@/components/ui/button';
-import { Priority, Status, useCreateTaskMutation } from '@/state/api';
+import { Priority, Status, useCreateTaskMutation, useGetUsersQuery } from '@/state/api';
 import { formatISO } from 'date-fns';
 import { useState } from 'react';
 
@@ -12,6 +12,7 @@ interface Props {
 
 const ModalNewTask = ({isOpen,onClose,id=null}: Props) => {
     const [createTask,{isLoading}] = useCreateTaskMutation();
+    const {data: users} = useGetUsersQuery()
 
     const [title,setTitle]=useState("")
     const [description,setDescription]=useState("")
@@ -53,7 +54,7 @@ const ModalNewTask = ({isOpen,onClose,id=null}: Props) => {
         return title && authorUserId;
     }
     
-    const selectStyles= 'mb-4 z-50  block w-full rounded border border-gray-300 px-3 py-2 dark:border-dark-300 dark:bg-dark-300 dark:text-white '
+    const selectStyles= 'mb-4 z-50  block w-full   text-gray-600 rounded border border-gray-300 px-3 py-2 dark:border-dark-300  dark:bg-[#101213] dark:text-white '
     const inputStyles='w-full rounded border border-gray-300 p-2 shadow-sm dark:border-dark-300 dark:bg-gray-700/10 dark:text-white  dark:focus:outline-none ';
     
     return (
@@ -101,8 +102,18 @@ const ModalNewTask = ({isOpen,onClose,id=null}: Props) => {
                     <input type='date' className={inputStyles} value={dueDate} onChange={(e) => setDueDate(e.target.value)}/>
                 </div>
 
-                <input type='text' className={inputStyles} placeholder='Author User ID' value={authorUserId} onChange={(e) => setAuthorUserId(e.target.value)}/>
-                <input type='text' className={inputStyles} placeholder='Assignee User ID' value={assignedUserId} onChange={(e) => setAssigneeUserId(e.target.value)}/>
+                <select value={authorUserId} className={selectStyles} onChange={(e) => setAuthorUserId(e.target.value)}>
+                    <option value="" >Select Author</option>
+                    {users && users.map((user) => (
+                        <option key={user.username} value={user.userId}>{user.username}</option>
+                    ))}
+                </select>
+                <select value={assignedUserId} className={selectStyles} onChange={(e) => setAssigneeUserId(e.target.value)}>
+                    <option value="" >Select Assignee</option>
+                    {users && users.map((user) => (
+                        <option key={user.userId} value={user.userId}>{user.username}</option>
+                    ))}
+                </select>
 
                 {id == null && (
                     <input
@@ -117,7 +128,7 @@ const ModalNewTask = ({isOpen,onClose,id=null}: Props) => {
                 <Button type='submit'
                     className={`mt-4 flex w-full  justify-center rounded-md border px-4 py-2 text-base  font-medium shadow-sm ${!isFormValid() || isLoading ? "cursor-not-allowed ":"hover:cursor-pointer"}`}
                 >
-                    {isLoading ? "Creating...":"Create Project"}
+                    {isLoading ? "Creating...":"Create Task"}
                 </Button>
             </form>
         </Modal>

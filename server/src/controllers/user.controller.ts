@@ -147,8 +147,8 @@ export const isAuthorized = async(req:Request,res:Response):Promise<void> => {
             username:true,
             profilePictureUrl:true,
             teamId:true,
-
-        }
+            team:true
+        },
     },)
 
     if(!user){

@@ -1,9 +1,11 @@
 import { Request,Response} from "express";
 import { PrismaClient } from "@prisma/client";
+import { AuthenticatedRequest } from "../middlewares/isAuthenticated";
 
 const prisma = new PrismaClient()
 
 export const getProjects = async(req:Request,res:Response):Promise<void> => {
+    const userId = (req as AuthenticatedRequest).id;
     try {
         const projects = await prisma.project.findMany();
         res.json(projects);
@@ -15,7 +17,8 @@ export const getProjects = async(req:Request,res:Response):Promise<void> => {
 }
 
 export const createProject = async(req:Request,res:Response):Promise<void> => {
-    const {name,description,startDate,endDate} = req.body;
+    const {teamId,name,description,startDate,endDate} = req.body;
+    console.log(teamId)
     try {
         const newProject = await prisma.project.create({
             data:{
@@ -25,7 +28,14 @@ export const createProject = async(req:Request,res:Response):Promise<void> => {
                 endDate
             }
         })
-        res.status(201).json(newProject);
+        const projectTeam = await prisma.projectTeam.create({
+            data:{
+                teamId,
+                projectId:newProject.id
+            }
+        })
+        console.log(projectTeam)
+        res.status(201).json({newProject,projectTeam});
     } catch (error : any) {
         res.status(500).json({
             message:`Error Creating Projects ${error.message}`

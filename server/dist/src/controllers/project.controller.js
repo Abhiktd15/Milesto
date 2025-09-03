@@ -13,6 +13,7 @@ exports.createProject = exports.getProjects = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.id;
     try {
         const projects = yield prisma.project.findMany();
         res.json(projects);
@@ -25,7 +26,8 @@ const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getProjects = getProjects;
 const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, description, startDate, endDate } = req.body;
+    const { teamId, name, description, startDate, endDate } = req.body;
+    console.log(teamId);
     try {
         const newProject = yield prisma.project.create({
             data: {
@@ -35,7 +37,14 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 endDate
             }
         });
-        res.status(201).json(newProject);
+        const projectTeam = yield prisma.projectTeam.create({
+            data: {
+                teamId,
+                projectId: newProject.id
+            }
+        });
+        console.log(projectTeam);
+        res.status(201).json({ newProject, projectTeam });
     }
     catch (error) {
         res.status(500).json({

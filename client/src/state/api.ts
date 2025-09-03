@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Project {
   id: number;
+  teamId:number;
   name: string;
   description?: string;
   startDate?: string;
@@ -30,6 +31,7 @@ export interface User {
   password:string;
   profilePictureUrl?: string;
   teamId?: number;
+  team?: Team;
 }
 
 export interface Attachment {
