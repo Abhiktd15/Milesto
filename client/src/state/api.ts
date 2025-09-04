@@ -87,26 +87,36 @@ export const api = createApi({
     tagTypes: ["Projects", "Tasks", "Users", "Teams","Auth"],
     endpoints: (build) => ({
         getProjects: build.query<Project[], void>({
-        query: () => "projects",
+        query: () => ({
+          url:"projects",
+          credentials:'include'
+        }),
         providesTags: ["Projects"],
         }),
         creatProject: build.mutation<Project, Partial<Project>>({
         query: (project) => ({
             url: "projects",
             method: "POST",
+            credentials:"include",
             body: project,
         }),
         invalidatesTags: ["Projects"],
         }),
         getTasks: build.query<Task[], { projectId: number }>({
-          query: ({ projectId }) => `tasks?projectId=${projectId}`,
+          query: ({ projectId }) => ({
+            url:  `tasks?projectId=${projectId}`,
+            credentials:'include'
+          }),
           providesTags: (result) =>
               result
               ? result.map(({ id }) => ({ type: "Tasks" as const, id }))
               : [{ type: "Tasks" as const }],
         }),
         getUsersTasks: build.query<Task[],number>({
-          query: (userId) => `tasks/user/${userId}`,
+          query: (userId) => ({
+            url:`tasks/user/${userId}`,
+            credentials:"include",
+          }),
           providesTags: (result,error,userId) =>
               result
               ? result.map(({ id }) => ({ type: "Tasks", id }))
@@ -116,6 +126,7 @@ export const api = createApi({
         query: (task) => ({
             url: "tasks",
             method: "POST",
+            credentials:"include",
             body: task,
         }),
         invalidatesTags: ["Tasks"],
@@ -124,6 +135,7 @@ export const api = createApi({
         query: ({ taskId, status }) => ({
             url: `tasks/${taskId}/status`,
             method: "PATCH",
+            credentials:"include",
             body: { status },
         }),
         invalidatesTags: (result, error, { taskId }) => [
@@ -131,14 +143,32 @@ export const api = createApi({
         ],
         }),
         search: build.query<SearchResults, string>({
-        query: (query) => `search?query=${query}`,
+        query: (query) =>({
+          url: `search?query=${query}`,
+          credentials:"include",
+        }),
         }),
         getUsers: build.query<User[], void>({
-        query: () => "users",
-        providesTags: ["Users"],
+          query: () => ({
+            url:"users",
+            credentials:"include",
+            }),
+          providesTags: ["Users"],
+        }),
+        createTeam:build.mutation<Team[],Partial<Team>>({
+          query : (teamData) => ({
+            url:"teams/new",
+            credentials:"include",
+            body:teamData,
+            method:"POST"
+          }),
+          invalidatesTags:["Teams"]
         }),
         getTeams: build.query<Team[], void>({
-          query: () => "teams",
+          query: () => ({
+            url:  "teams",
+            credentials:"include",
+          }),
           providesTags: ["Teams"],
         }),
         //users apis
@@ -162,11 +192,11 @@ export const api = createApi({
         }),
         checkAuth: build.query<User, void>({
           query: () => ({
-            url:"users/me",
-            credentials:"include",
-            method:"GET"
+            url: "users/me",
+            credentials: "include",
+            method: "GET"
           }),
-          providesTags: ["Auth"],
+          providesTags: ["Auth"]
         }),
     }),
 });
@@ -182,5 +212,6 @@ export const {
     useGetUsersTasksQuery,
     useCreateUserMutation,
     useLoginUserMutation,
-    useCheckAuthQuery
+    useCheckAuthQuery,
+    useCreateTeamMutation
 } = api;
