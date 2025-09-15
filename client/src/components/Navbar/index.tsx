@@ -1,13 +1,29 @@
 import { useAppDispatch, useAppSelector } from '@/app/redux'
 import { Switch } from '@/components/ui/switch'
 import { setIsDarkMode, setIsSidebarCollapsed } from '@/state'
-import { MenuIcon, MoonIcon, SearchIcon, Settings, SunIcon } from 'lucide-react'
+import { useLogoutUserMutation,api } from '@/state/api'
+import { BellIcon, LogOutIcon, MenuIcon, SearchIcon, Settings } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed)
     const isDarkMode = useAppSelector((state) => state.global.isDarkMode)
+    const [logoutUser] = useLogoutUserMutation()
+
+    const logoutHandler = async () => {
+        try {
+            await logoutUser().unwrap();
+            dispatch(api.util.resetApiState());
+            router.push('/login');
+        } catch (error:any) {
+            console.error("Logout Failed:",error)
+            
+        }
+    }
+    
 
     
     return (
@@ -40,7 +56,16 @@ const Navbar = () => {
                     className={isDarkMode ? `h-min w-min rounded  dark:text-gray-400` : `h-min w-min rounded  hover:bg-gray-100`}>
                     <Settings className='size-6 cursor-pointer'/>
                 </Link>
-                <div className=' ml-2 mr-5 hidden min-h-[2rem] w-[0.1rem] bg-gray-400 dark:bg-gray-200 md:inline-block'></div>
+                <Link href={'/notifications'}
+                    className={isDarkMode ? `h-min w-min rounded  dark:text-gray-400` : `h-min w-min rounded  hover:bg-gray-100`}>
+                    <BellIcon className='size-6 cursor-pointer'/>
+                </Link>
+                <div className=' ml-2 mr-2 hidden min-h-[2rem] w-[0.1rem] bg-gray-400 dark:bg-gray-200 md:inline-block'></div>
+                <button
+                    onClick={logoutHandler}
+                    className={isDarkMode ? `h-min w-min rounded  dark:text-gray-400` : `h-min w-min rounded  hover:bg-gray-100`}>
+                    <LogOutIcon className='size-6 cursor-pointer hover:scale-110'/>
+                </button>
             </div>
         </div>
     )

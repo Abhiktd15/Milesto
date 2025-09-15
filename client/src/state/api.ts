@@ -190,6 +190,14 @@ export const api = createApi({
           }),
           invalidatesTags:["Auth"]
         }),
+        logoutUser:build.mutation<User[],void>({
+          query: () => ({
+            url:"users/logout",
+            credentials:"include",
+            method:"GET",
+          }),
+          invalidatesTags:["Auth"]
+        }),
         checkAuth: build.query<User, void>({
           query: () => ({
             url: "users/me",
@@ -213,5 +221,6 @@ export const {
     useCreateUserMutation,
     useLoginUserMutation,
     useCheckAuthQuery,
+    useLogoutUserMutation,
     useCreateTeamMutation
 } = api;

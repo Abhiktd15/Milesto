@@ -7,7 +7,30 @@ const prisma = new PrismaClient()
 export const getProjects = async(req:Request,res:Response):Promise<void> => {
     const userId = (req as AuthenticatedRequest).id;
     try {
-        const projects = await prisma.project.findMany();
+        const user = await prisma.user.findUnique({
+            where:{userId:Number(userId)}
+        })
+        const projects = await prisma.project.findMany({
+            where:{
+                OR:[
+                    {
+                        projectTeams:{
+                            some:{
+                                teamId:Number(user?.teamId)
+                            }
+                        }
+                    },
+                    // TOdo : in future add a createdby field in project schema and then here find if project is created by user then show it
+                    // {
+                    //     projectTeams:{
+                    //         some:{
+                    //             team: 
+                    //         }
+                    //     }    
+                    // }
+                ]
+            }
+        });
         res.json(projects);
     } catch (error : any) {
         res.status(500).json({
@@ -34,7 +57,6 @@ export const createProject = async(req:Request,res:Response):Promise<void> => {
                 projectId:newProject.id
             }
         })
-        console.log(projectTeam)
         res.status(201).json({newProject,projectTeam});
     } catch (error : any) {
         res.status(500).json({

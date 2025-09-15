@@ -23,6 +23,14 @@ const createTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 teamName
             }
         });
+        const user = yield prisma.user.update({
+            where: {
+                userId: Number(userId)
+            },
+            data: {
+                teamId: teams.id
+            }
+        });
         res.status(201).json(teams);
     }
     catch (error) {
@@ -35,7 +43,19 @@ exports.createTeam = createTeam;
 const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { projectId } = req.query;
     try {
-        const teams = yield prisma.team.findMany();
+        const teams = yield prisma.team.findMany({
+            select: {
+                id: true,
+                teamName: true,
+                projectManagerUserId: true,
+                productOwnerUserId: true,
+                user: {
+                    select: {
+                        userId: true
+                    }
+                }
+            }
+        });
         const teamsWithUsername = yield Promise.all(teams.map((team) => __awaiter(void 0, void 0, void 0, function* () {
             const productOwner = yield prisma.user.findUnique({
                 where: { userId: team.productOwnerUserId },

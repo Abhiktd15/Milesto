@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAuthorized = exports.getUsers = exports.login = exports.createUser = void 0;
+exports.logout = exports.isAuthorized = exports.getUsers = exports.login = exports.createUser = void 0;
 const client_1 = require("@prisma/client");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -160,3 +160,13 @@ const isAuthorized = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     res.status(200).json(user);
 });
 exports.isAuthorized = isAuthorized;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(201)
+        .cookie("token", "", {
+        maxAge: 0
+    })
+        .json({
+        message: "Successfully Logged Out!"
+    });
+});
+exports.logout = logout;

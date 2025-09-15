@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button';
+import { useCheckAuthQuery } from '@/state/api';
 import { UserIcon } from 'lucide-react';
-import { useCheckAuthQuery } from '../../state/api';
 import Image from 'next/image';
 
 const Settings = () => {

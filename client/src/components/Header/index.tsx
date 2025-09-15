@@ -12,7 +12,9 @@ const Header = ({name,buttonComponent,isSmallText=false} :Props) => {
             <h1 className={`${isSmallText?'text-lg':'text-2xl'} font-semibold dark:text-white`}>
                 {name}
             </h1>
-            {buttonComponent}
+            <div className='flex items-center gap-2'>
+                {buttonComponent}
+            </div>
         </div>
     )
 }

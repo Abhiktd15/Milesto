@@ -160,3 +160,13 @@ export const isAuthorized = async(req:Request,res:Response):Promise<void> => {
 
     res.status(200).json(user)
 }
+
+export const logout = async(req:Request,res:Response):Promise<void> =>{
+    res.status(201)
+        .cookie("token","", {
+            maxAge: 0
+        })
+        .json({
+            message:"Successfully Logged Out!"
+        })
+}
